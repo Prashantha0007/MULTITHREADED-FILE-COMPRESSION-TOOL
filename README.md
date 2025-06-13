@@ -75,3 +75,8 @@ Managing concurrency with multithreading
 Building interactive CLI programs
 
 Structuring real-world software projects
+
+OUTPUT
+
+![Image](https://github.com/user-attachments/assets/7c0aba4b-a612-433e-b33d-54854af199c6)
+![Image](https://github.com/user-attachments/assets/2755366c-ad31-4066-bcf4-27eac4c81b26)
