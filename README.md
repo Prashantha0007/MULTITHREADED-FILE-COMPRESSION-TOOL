@@ -13,70 +13,106 @@ DURATION : 4 WEEKS
 MENTOR : NEELA SANTHOSH
 
 Task Overview:
-📌 Project Objective
-The primary objective of this project is to design and develop a C++-based file compression and decompression tool that utilizes multithreading to improve performance. The tool applies Run-Length Encoding (RLE) to compress and decompress string-based data. It allows users to input data manually, compress it using multiple threads, and decompress it when needed — all through a command-line interface.
 
-This task is part of an internship assignment aimed at understanding core C++ concepts such as string manipulation, file handling, thread management, and performance optimization using concurrency.
+📦 Run-Length Encoding (RLE) File Compressor & Decompressor
+This C++ program implements a simple, efficient, and file-based Run-Length Encoding (RLE) compression and decompression system. It allows users to compress text files using the RLE algorithm and decompress them back to their original form with accuracy.
 
-⚙️ Features Implemented
-🔹 Run-Length Encoding (RLE): Implements a basic form of lossless data compression by replacing repeated characters with a single character followed by the count.
+🚀 Features
+✅ Implements Run-Length Encoding algorithm (4a instead of aaaa) to reduce file size.
 
-🔹 Multithreaded Compression: Divides the input string into multiple chunks based on user-defined threads and compresses each part in parallel using C++11 std::thread.
+📂 Works with files: reads from input.txt, writes to compressed.txt and decompressed.txt.
 
-🔹 Decompression Support: Accurately reverses the compression process using a single-threaded logic that parses the encoded string back to its original form.
+❌ Handles errors gracefully, such as incorrect formats during decompression.
 
-🔹 User-Friendly Input: Allows users to enter a custom string for compression and choose the number of threads dynamically.
+🧠 Designed to be beginner-friendly and easy to understand.
 
-🔹 Menu Interface: Presents a basic interface for users to choose between compression and decompression operations.
+🔁 Reversible: Lossless compression with no data loss during decompression.
 
-🔧 How It Works
-Compression Flow:
+📌 What is Run-Length Encoding?
+Run-Length Encoding (RLE) is a simple form of lossless data compression where sequences of the same character (runs) are stored as a single character followed by its count.
 
-User inputs a string and selects the number of threads.
+For example:
 
-The input string is divided into equal parts.
+makefile
+Copy
+Edit
+Original:     aaaaabbbbccddddd
+Compressed:   5a4b2c5d
+It is most effective when the input data has lots of repeating characters.
 
-Each part is passed to a separate thread that performs RLE compression.
+🧾 How It Works
+🔹 Compression (compressRLE)
+The program reads text content from input.txt.
 
-The compressed results from all threads are concatenated and displayed.
+It iterates through the string and counts how many times each character is repeated consecutively.
 
-Decompression Flow:
+It then writes the count followed by the character (e.g., 4a) into compressed.txt.
 
-User provides a compressed string (e.g., a3b2c4).
+🔹 Decompression (decompressRLE)
+The program reads the encoded string from compressed.txt.
 
-The program scans character-digit pairs, reconstructs the original string, and displays it.
+It parses the numeric value (count) and then appends the corresponding character that many times to rebuild the original string.
 
-🧠 Key Concepts Used
-std::thread for parallel processing
+The result is saved to decompressed.txt.
 
-Lambda functions and closures
+🧑‍💻 How to Use
+Make sure you have a file named input.txt in the same directory as the program.
 
-string operations and substrings
+Run the program.
 
-Synchronization via join()
+Choose 'c' to compress or 'd' to decompress.
 
-Basic input validation and edge case handling
+After execution:
 
-💡 Use Case
-This tool is particularly useful for learning purposes or for compressing repetitive character-based strings like logs, pattern-based datasets, or input files with repeated characters. While it's not as advanced as ZIP or GZIP, it provides a great introduction to custom compression logic with multithreading in C++.
+Compressed output will be saved to compressed.txt.
 
-🗃️ Files Included
-main.cpp – Full code with menu-based user interface
+Decompressed output will be saved to decompressed.txt.
 
-No external file dependencies — works entirely via user input
+🧪 Example
+Input (input.txt):
 
-✅ Learning Outcomes
-By completing this task, I gained hands-on experience in:
+nginx
+Copy
+Edit
+aaabbbccccddddd
+Compressed Output (compressed.txt):
 
-Writing clean, modular C++ code
+Copy
+Edit
+3a3b4c5d
+Decompressed Output (decompressed.txt):
 
-Implementing basic compression algorithms
+nginx
+Copy
+Edit
+aaabbbccccddddd
+🧱 File Structure
+css
+Copy
+Edit
+📁 Project Directory
+├── input.txt
+├── compressed.txt
+├── decompressed.txt
+└── rle_compression.cpp
+⚠️ Limitations
+Best suited for text files with lots of repeating characters.
 
-Managing concurrency with multithreading
+Inefficient for text with little to no repetition (may increase file size).
 
-Building interactive CLI programs
+Assumes input format correctness during decompression.
 
-Structuring real-world software projects
+📌 Future Improvements
+Add support for binary file compression.
+
+Implement GUI or CLI options for file selection.
+
+Display compression ratio and file sizes.
+
+Optional: Add multithreading for large file handling.
+
+📜 License
+This project is open-source and free to use for educational or personal projects. Attribution appreciated but not required.
 
 OUTPUT
 
