@@ -80,5 +80,8 @@ Structuring real-world software projects
 
 OUTPUT
 
-![Image](https://github.com/user-attachments/assets/7c0aba4b-a612-433e-b33d-54854af199c6)
-![Image](https://github.com/user-attachments/assets/2755366c-ad31-4066-bcf4-27eac4c81b26)
+![Image](https://github.com/user-attachments/assets/ff6aa040-fa05-478f-8f5f-890fd616c51b)
+
+![Image](https://github.com/user-attachments/assets/6d11f86c-6b9c-412d-9fdf-78e518649dbf)
+![Image](https://github.com/user-attachments/assets/22d422f3-c1f1-4af5-b48a-00dd08dbd6b5)
+![Image](https://github.com/user-attachments/assets/6024c7f7-5d40-4377-a2c8-e6d249496496)
