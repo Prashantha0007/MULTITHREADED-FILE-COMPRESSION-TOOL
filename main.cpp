@@ -1,105 +1,107 @@
 #include <iostream>
-#include <sstream>
-#include <thread>
-#include <vector>
+#include <fstream>
 #include <string>
+#include <cctype>
+
 using namespace std;
 
-// ---------- Compression Function ----------
-string compressChunk(const string& input) {
+// Run-Length Encoding
+string compressRLE(const string& data) {
     string result;
-    int n = input.length();
-    for (int i = 0; i < n;) {
-        char current = input[i];
-        int count = 1;
-        while (i + count < n && input[i + count] == current)
+    int count = 1;
+
+    for (size_t i = 1; i <= data.length(); ++i) {
+        if (i < data.length() && data[i] == data[i - 1]) {
             count++;
-        result += current + to_string(count);
-        i += count;
+        } else {
+            result += to_string(count) + data[i - 1];
+            count = 1;
+        }
     }
     return result;
 }
 
-// ---------- Decompression Function ----------
-string decompressString(const string& input) {
+// Run-Length Decoding
+string decompressRLE(const string& data) {
     string result;
-    for (size_t i = 0; i < input.length(); ) {
-        char ch = input[i++];
-        string countStr;
-        while (i < input.length() && isdigit(input[i])) {
-            countStr += input[i++];
+    string countStr;
+
+    for (size_t i = 0; i < data.length(); ++i) {
+        if (isdigit(data[i])) {
+            countStr += data[i];
+        } else {
+            if (countStr.empty()) {
+                throw invalid_argument("Invalid compressed format: missing count before character '" + string(1, data[i]) + "'");
+            }
+            int count = stoi(countStr);
+            result.append(count, data[i]);
+            countStr.clear();
         }
-        int count = stoi(countStr);
-        result.append(count, ch);
     }
+
     return result;
 }
 
-// ---------- Multithreaded Compression ----------
-void compressString(const string& data, int threadCount) {
-    int length = data.size();
-    int chunkSize = length / threadCount;
-
-    vector<string> compressedParts(threadCount);
-    vector<thread> threads;
-
-    for (int i = 0; i < threadCount; ++i) {
-        int start = i * chunkSize;
-        int end = (i == threadCount - 1) ? length : (i + 1) * chunkSize;
-
-        threads.emplace_back([=, &compressedParts]() {
-            compressedParts[i] = compressChunk(data.substr(start, end - start));
-        });
-    }
-
-    for (auto& t : threads)
-        t.join();
-
-    // Join all compressed parts
-    string finalResult;
-    for (const auto& part : compressedParts)
-        finalResult += part;
-
-    cout << "\nOriginal String: " << data << endl;
-    cout << "Compressed String: " << finalResult << endl;
-}
-
-// ---------- Main Program ----------
 int main() {
-    int choice;
-    cout << "1. Compress a string\n";
-    cout << "2. Decompress a string\n";
-    cout << "Enter your choice: ";
+    char choice;
+    cout << "Choose mode: (c)ompress or (d)ecompress: ";
     cin >> choice;
-    cin.ignore();  // Clear newline from buffer
 
-    if (choice == 1) {
-        string inputData;
-        int threadCount;
-
-        cout << "Enter the string to compress: ";
-        getline(cin, inputData);
-
-        cout << "Enter number of threads to use: ";
-        cin >> threadCount;
-
-        if (threadCount <= 0 || threadCount > inputData.size()) {
-            cout << "Invalid thread count. Using 1 thread instead.\n";
-            threadCount = 1;
+    if (choice == 'c') {
+        ifstream inputFile("input.txt");
+        if (!inputFile) {
+            cerr << "❌ Cannot open input.txt\n";
+            return 1;
         }
 
-        compressString(inputData, threadCount);
+        string content((istreambuf_iterator<char>(inputFile)),
+                       istreambuf_iterator<char>());
+        inputFile.close();
 
-    } else if (choice == 2) {
-        string compressedInput;
+        string compressed = compressRLE(content);
 
-        cout << "Enter the compressed string to decompress: ";
-        getline(cin, compressedInput);  // Note: this may need another cin.ignore() if input fails
+        ofstream outputFile("compressed.txt");
+        if (!outputFile) {
+            cerr << "❌ Cannot write compressed.txt\n";
+            return 1;
+        }
 
-        string result = decompressString(compressedInput);
-        cout << "\nDecompressed String: " << result << endl;
+        outputFile << compressed;
+        outputFile.close();
+
+        cout << "✅ Compression done. Check compressed.txt\n";
+
+    } else if (choice == 'd') {
+        ifstream inputFile("compressed.txt");
+        if (!inputFile) {
+            cerr << "❌ Cannot open compressed.txt\n";
+            return 1;
+        }
+
+        string content((istreambuf_iterator<char>(inputFile)),
+                       istreambuf_iterator<char>());
+        inputFile.close();
+
+        try {
+            string decompressed = decompressRLE(content);
+
+            ofstream outputFile("decompressed.txt");
+            if (!outputFile) {
+                cerr << "❌ Cannot write decompressed.txt\n";
+                return 1;
+            }
+
+            outputFile << decompressed;
+            outputFile.close();
+
+            cout << "✅ Decompression done. Check decompressed.txt\n";
+        } catch (const exception& e) {
+            cerr << "❌ Error: " << e.what() << '\n';
+        }
+
     } else {
-        cout << "Invalid choice!" << endl;
+        cout << "❌ Invalid option. Use 'c' or 'd'.\n";
+        return 1;
     }
 
     return 0;
